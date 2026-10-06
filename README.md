@@ -26,7 +26,7 @@ This repository will contain five course assignments and, potentially, a final c
 | Project | Description | Status |
 |---|---|---|
 | [Assignment 1 — Travel Badge](./TravelBadge) | An Android application developed as the first course assignment. | Completed |
-| Assignment 2 | To be announced. | Upcoming |
+| [Assignment 2 — Dice Screens](./DiceScreens) | An Android application developed as the second course assignment. | Completed |
 | Assignment 3 | To be announced. | Upcoming |
 | Assignment 4 | To be announced. | Upcoming |
 | Assignment 5 | To be announced. | Upcoming |
