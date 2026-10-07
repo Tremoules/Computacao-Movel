@@ -46,12 +46,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun DiceRollerApp() {
-    DiceWithRollerAndImage(
-        navController = rememberNavController()
-    )
+    DiceScreensTheme {
+        DiceWithRollerAndImage(
+            navController = rememberNavController()
+        )
+    }
 }
 
 @Composable
@@ -94,7 +96,7 @@ fun DiceWithRollerAndImage(
             onClick = { result = (1..6).random() },
             modifier = Modifier.width(220.dp)
         ) {
-            Text(text = stringResource(R.string.roll), fontSize = 24.sp)
+            Text(text = stringResource(R.string.roll), fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -107,7 +109,7 @@ fun DiceWithRollerAndImage(
             },
             modifier = Modifier.width(220.dp)
         ) {
-            Text(text = stringResource(R.string.result_screen), fontSize = 24.sp)
+            Text(text = stringResource(R.string.result_screen), fontSize = 20.sp)
         }
     }
 }

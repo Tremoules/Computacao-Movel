@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -24,10 +23,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.dicescreens.navigation.Screens
+import com.example.dicescreens.ui.theme.DiceScreensTheme
+
+@Preview(showBackground = true)
+@Composable
+fun DiceResult3Preview() {
+    DiceScreensTheme {
+        DiceResult3(navController = rememberNavController())
+    }
+}
 
 @Composable
 fun DiceResult3(
@@ -64,8 +74,7 @@ fun DiceResult3(
         if (diceImage != null) {
             Image(
                 painter = painterResource(diceImage),
-                contentDescription = "Die showing $currentValue",
-                modifier = Modifier.size(72.dp)
+                contentDescription = "Die showing $currentValue"
             )
         }
 

@@ -6,7 +6,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.dicescreens.DiceResult
 import com.example.dicescreens.DiceResult1
 import com.example.dicescreens.DiceResult2
 import com.example.dicescreens.DiceResult3

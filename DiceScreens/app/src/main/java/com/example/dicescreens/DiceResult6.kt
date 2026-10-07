@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,10 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.dicescreens.navigation.Screens
+import com.example.dicescreens.ui.theme.DiceScreensTheme
 
 fun diceImageFor(value: Int): Int {
     return when (value) {
@@ -37,6 +41,14 @@ fun diceImageFor(value: Int): Int {
         4 -> R.drawable.dice_4
         5 -> R.drawable.dice_5
         else -> R.drawable.dice_6
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DiceResult6Preview() {
+    DiceScreensTheme {
+        DiceResult6(navController = rememberNavController())
     }
 }
 
@@ -73,7 +85,7 @@ fun DiceResult6(
             ) {
                 Text(
                     text = "Current Die",
-                    fontSize = 12.sp
+                    fontSize = 14.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -83,7 +95,7 @@ fun DiceResult6(
                         diceImageFor(currentValue)
                     ),
                     contentDescription = "Current die showing $currentValue",
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(96.dp)
                 )
             }
 
@@ -92,7 +104,7 @@ fun DiceResult6(
             ) {
                 Text(
                     text = "Second Die",
-                    fontSize = 12.sp
+                    fontSize = 14.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -103,11 +115,11 @@ fun DiceResult6(
                             diceImageFor(secondRoll!!)
                         ),
                         contentDescription = "Second die showing $secondRoll",
-                        modifier = Modifier.size(64.dp)
+                        modifier = Modifier.size(96.dp)
                     )
                 } else {
                     Box(
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.size(96.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("?")
@@ -122,11 +134,15 @@ fun DiceResult6(
             onClick = {
                 secondRoll = (1..6).random()
             },
-            modifier = Modifier.width(220.dp)
+            modifier = Modifier.width(220.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         ) {
             Text(
                 text = "Roll Second Die",
-                fontSize = 12.sp
+                fontSize = 20.sp
             )
         }
 
@@ -160,11 +176,15 @@ fun DiceResult6(
                             Screens.DiceResult.createRoute(rolledValue)
                         )
                     },
-                    modifier = Modifier.width(220.dp)
+                    modifier = Modifier.width(220.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 ) {
                     Text(
                         text = "Go to Result",
-                        fontSize = 12.sp
+                        fontSize = 20.sp
                     )
                 }
             }
