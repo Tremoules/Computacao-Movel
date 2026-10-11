@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,6 +62,8 @@ fun DiceResult6(
     val currentValue = 6
 
     var secondRoll by remember { mutableStateOf<Int?>(null) }
+
+    var showResult by remember { mutableStateOf("false") }
 
     Column (
         modifier = modifier.fillMaxSize(),
@@ -130,51 +133,67 @@ fun DiceResult6(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                secondRoll = (1..6).random()
-            },
-            modifier = Modifier.width(220.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        ) {
-            Text(
-                text = "Roll Second Die",
-                fontSize = 20.sp
-            )
-        }
-
-        secondRoll?.let { rolledValue ->
-            val playerWon = rolledValue >= currentValue
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = if (playerWon) {
-                    "You Won! ($currentValue ≤ $rolledValue)"
-                } else {
-                    "You Lost! ($currentValue > $rolledValue)"
+        if (showResult == "false") {
+            Button(
+                onClick = {
+                    secondRoll = (1..6).random()
                 },
-                fontWeight = FontWeight.Bold,
-                color = if (playerWon) {
-                    Color(0xFF2E7D32)
-                } else {
-                    MaterialTheme.colorScheme.error
-                }
-            )
+                modifier = Modifier.width(220.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Text(
+                    text = "Roll Second Die",
+                    fontSize = 20.sp
+                )
+            }
+        } else {
+            Button(
+                onClick = { navController.navigate(Screens.DiceResult.createRoute(6)) },
+                modifier = Modifier.width(220.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Text(
+                    text = "Return to game",
+                    fontSize = 20.sp
+                )
+            }
         }
 
         secondRoll?.let { rolledValue ->
-            if (rolledValue >= currentValue) {
+            if (showResult == "false") {
+                val playerWon = rolledValue >= currentValue
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = if (playerWon) {
+                        "You Won! ($currentValue ≤ $rolledValue)"
+                    } else {
+                        "You Lost! ($currentValue > $rolledValue)"
+                    },
+                    fontWeight = FontWeight.Bold,
+                    color = if (playerWon) {
+                        Color(0xFF2E7D32)
+                    } else {
+                        MaterialTheme.colorScheme.error
+                    }
+                )
+            }
+        }
+
+        secondRoll?.let { rolledValue ->
+            if (rolledValue >= currentValue && showResult == "false") {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Button(
                     onClick = {
-                        navController.navigate(
-                            Screens.DiceResult.createRoute(rolledValue)
-                        )
+                        showResult = "true"
                     },
                     modifier = Modifier.width(220.dp),
                     colors = ButtonDefaults.buttonColors(
