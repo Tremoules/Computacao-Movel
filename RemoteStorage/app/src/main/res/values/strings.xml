@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">RemoteStorage</string>
+    <string name="select_category">Select category</string>
+    <string name="category_character">Character</string>
+    <string name="category_episode">Episode</string>
+    <string name="category_location">Location</string>
+    <string name="filter_by_name">Filter %1$s by name</string>
+    <string name="api_stats">API stats</string>
+    <string name="total_items">Total matching items: %1$d</string>
+    <string name="retrieved_items">Retrieved in current view: %1$d items</string>
+    <string name="retrieved_images">Images retrieved: %1$d</string>
+    <string name="status">Status</string>
+    <string name="species">Species</string>
+    <string name="episode_code">Episode</string>
+    <string name="air_date">Air date</string>
+    <string name="location_type">Type</string>
+    <string name="dimension">Dimension</string>
+    <string name="item_field">%1$s: %2$s</string>
+    <string name="item_image">Image for %1$s</string>
+    <string name="related_character_image">Related character: %1$s</string>
+    <string name="image_unavailable">Image unavailable</string>
+    <string name="unknown">Unknown</string>
+    <string name="loading">Loading items…</string>
+    <string name="loading_failed">Could not load items. Check your connection and try again.</string>
+    <string name="no_results">No matches found. Try another name or category.</string>
+    <string name="roll_random_item">Roll random item</string>
+    <string name="rolling">Rolling…</string>
+    <string name="only_one_result">Only one matching item is available.</string>
+    <string name="retry">Retry</string>
+</resources>
