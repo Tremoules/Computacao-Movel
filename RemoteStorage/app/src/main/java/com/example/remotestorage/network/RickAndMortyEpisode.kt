@@ -1,4 +1,4 @@
-package com.example.rickandmortyexplorer.network
+package com.example.remotestorage.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

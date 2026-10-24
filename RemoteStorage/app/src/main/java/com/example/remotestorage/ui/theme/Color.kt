@@ -1,4 +1,4 @@
-package com.example.rickandmortyexplorer.ui.theme
+package com.example.remotestorage.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

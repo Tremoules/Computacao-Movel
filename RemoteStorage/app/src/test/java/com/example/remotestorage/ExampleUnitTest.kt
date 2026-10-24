@@ -1,4 +1,4 @@
-package com.example.rickandmortyexplorer
+package com.example.remotestorage
 
 import org.junit.Test
 

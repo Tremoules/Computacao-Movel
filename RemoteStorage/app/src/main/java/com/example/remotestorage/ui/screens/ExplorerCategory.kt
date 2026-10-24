@@ -1,7 +1,7 @@
-package com.example.rickandmortyexplorer.ui.screens
+package com.example.remotestorage.ui.screens
 
 import androidx.annotation.StringRes
-import com.example.rickandmortyexplorer.R
+import com.example.remotestorage.R
 
 enum class ExplorerCategory(
     @get:StringRes val label: Int,

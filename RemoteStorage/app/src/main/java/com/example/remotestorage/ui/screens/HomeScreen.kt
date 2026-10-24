@@ -1,4 +1,4 @@
-package com.example.rickandmortyexplorer.ui.screens
+package com.example.remotestorage.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,12 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.rickandmortyexplorer.R
-import com.example.rickandmortyexplorer.ui.theme.RickAndMortyExplorerTheme
+import com.example.remotestorage.R
+import com.example.remotestorage.ui.theme.RemoteStorageTheme
 
 @Composable
 fun HomeScreen(
-    rickAndMortyUiState: RickAndMortyUiState,
+    explorerUiState: ExplorerUiState,
     selectedCategory: ExplorerCategory,
     nameFilter: String,
     onCategorySelected: (ExplorerCategory) -> Unit,
@@ -39,6 +39,12 @@ fun HomeScreen(
     onRoll: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
+    storageState: RemoteStorageUiState = RemoteStorageUiState(),
+    onSave: () -> Unit = {},
+    onLoadLast: () -> Unit = {},
+    onRetryStorageSync: () -> Unit = {},
+    onDismissStorageMessage: () -> Unit = {},
+    onBrowseApi: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
@@ -51,6 +57,7 @@ fun HomeScreen(
             ExplorerCategory.entries.forEach { category ->
                 FilterChip(
                     selected = category == selectedCategory,
+                    enabled = !storageState.isLoadingLast,
                     onClick = { onCategorySelected(category) },
                     label = { Text(stringResource(category.label)) },
                     modifier = Modifier.weight(1f)
@@ -62,15 +69,27 @@ fun HomeScreen(
             onValueChange = onNameFilterChanged,
             label = { Text(stringResource(R.string.filter_by_name, stringResource(selectedCategory.label))) },
             singleLine = true,
+            enabled = !storageState.isLoadingLast,
             modifier = Modifier.fillMaxWidth()
         )
-        when (rickAndMortyUiState) {
-            is RickAndMortyUiState.Loading -> LoadingScreen()
-            is RickAndMortyUiState.Error -> ErrorScreen(onRetry = onRetry)
-            is RickAndMortyUiState.Success -> ResultScreen(
-                result = rickAndMortyUiState,
+        val result = explorerUiState as? ExplorerUiState.Success
+        RemoteStoragePanel(
+            state = storageState,
+            canSave = result?.selectedItem != null && !result.isRolling,
+            onSave = onSave,
+            onLoadLast = onLoadLast,
+            onRetrySync = onRetryStorageSync,
+            onDismissMessage = onDismissStorageMessage
+        )
+        when (explorerUiState) {
+            is ExplorerUiState.Loading -> LoadingScreen()
+            is ExplorerUiState.Error -> ErrorScreen(onRetry = onRetry)
+            is ExplorerUiState.Success -> ResultScreen(
+                result = explorerUiState,
                 category = selectedCategory,
-                onRoll = onRoll
+                onRoll = onRoll,
+                allowRoll = !storageState.isLoadingLast,
+                onBrowseApi = onBrowseApi
             )
         }
     }
@@ -78,20 +97,30 @@ fun HomeScreen(
 
 @Composable
 fun ResultScreen(
-    result: RickAndMortyUiState.Success,
+    result: ExplorerUiState.Success,
     category: ExplorerCategory,
     onRoll: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    allowRoll: Boolean = true,
+    onBrowseApi: () -> Unit = {}
 ) {
     val item = result.selectedItem
     val imageCount = (result.items.mapNotNull { it.image } + listOfNotNull(item?.image)).distinct().size
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(R.string.api_stats), style = MaterialTheme.typography.titleSmall)
-                Text(stringResource(R.string.total_items, result.totalItems))
-                Text(stringResource(R.string.retrieved_items, result.items.size))
-                Text(stringResource(R.string.retrieved_images, imageCount))
+                if (result.isSavedSnapshot) {
+                    Text(stringResource(R.string.saved_snapshot), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.saved_snapshot_description))
+                    Button(onClick = onBrowseApi, enabled = allowRoll) {
+                        Text(stringResource(R.string.browse_api))
+                    }
+                } else {
+                    Text(stringResource(R.string.api_stats), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.total_items, result.totalItems))
+                    Text(stringResource(R.string.retrieved_items, result.items.size))
+                    Text(stringResource(R.string.retrieved_images, imageCount))
+                }
             }
         }
         if (item == null) {
@@ -131,12 +160,12 @@ fun ResultScreen(
         }
         Button(
             onClick = onRoll,
-            enabled = result.items.size > 1 && !result.isRolling,
+            enabled = allowRoll && result.items.size > 1 && !result.isRolling,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(if (result.isRolling) R.string.rolling else R.string.roll_random_item))
         }
-        if (result.items.size == 1) Text(stringResource(R.string.only_one_result))
+        if (result.items.size == 1 && !result.isSavedSnapshot) Text(stringResource(R.string.only_one_result))
     }
 }
 
@@ -164,9 +193,9 @@ fun ErrorScreen(onRetry: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 fun HomeScreenPreview() {
     val item = ExplorerItem(1, "Rick Sanchez", "Alive", "Human")
-    RickAndMortyExplorerTheme {
+    RemoteStorageTheme {
         HomeScreen(
-            rickAndMortyUiState = RickAndMortyUiState.Success(826, listOf(item), item),
+            explorerUiState = ExplorerUiState.Success(826, listOf(item), item),
             selectedCategory = ExplorerCategory.Character,
             nameFilter = "",
             onCategorySelected = {}, onNameFilterChanged = {}, onRoll = {}, onRetry = {}

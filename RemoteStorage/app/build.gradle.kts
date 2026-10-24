@@ -2,16 +2,23 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services) apply false
+}
+
+// Keep code review and unit tests possible before the Firebase console setup.
+// Once the tutorial's file is added, the plugin generates Firebase's Android resources.
+if (file("google-services.json").isFile) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.rickandmortyexplorer"
+    namespace = "com.example.remotestorage"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.rickandmortyexplorer"
+        applicationId = "com.example.remotestorage"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -37,6 +44,9 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.firebase.bom.v3510))
+    implementation(libs.firebase.database)
+    implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
     implementation(libs.okhttp)
