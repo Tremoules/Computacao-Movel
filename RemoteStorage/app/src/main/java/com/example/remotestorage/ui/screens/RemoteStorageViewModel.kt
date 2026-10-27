@@ -21,18 +21,7 @@ import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
 import kotlin.coroutines.coroutineContext
-
-sealed interface ExplorerUiState {
-    data class Success(
-        val totalItems: Int,
-        val items: List<ExplorerItem>,
-        val selectedItem: ExplorerItem?,
-        val isRolling: Boolean = false,
-        val isSavedSnapshot: Boolean = false
-    ) : ExplorerUiState
-    object Error : ExplorerUiState
-    object Loading : ExplorerUiState
-}
+import kotlin.time.Duration.Companion.milliseconds
 
 class RemoteStorageViewModel(
     private val apiService: RickAndMortyApiService = RickAndMortyApi.retrofitService,
@@ -91,18 +80,30 @@ class RemoteStorageViewModel(
                             ExplorerItem(it.id, it.name, it.status, it.species, image = it.image)
                         }
                     }
+
                     ExplorerCategory.Episode -> {
                         val response = apiService.getEpisodes(name = name)
                         response.info.count to response.results.map {
-                            ExplorerItem(it.id, it.name, it.episode, it.airDate,
-                                relatedCharacterUrl = it.characters.firstOrNull())
+                            ExplorerItem(
+                                it.id,
+                                it.name,
+                                it.episode,
+                                it.airDate,
+                                relatedCharacterUrl = it.characters.firstOrNull()
+                            )
                         }
                     }
+
                     ExplorerCategory.Location -> {
                         val response = apiService.getLocations(name = name)
                         response.info.count to response.results.map {
-                            ExplorerItem(it.id, it.name, it.type, it.dimension,
-                                relatedCharacterUrl = it.residents.firstOrNull())
+                            ExplorerItem(
+                                it.id,
+                                it.name,
+                                it.type,
+                                it.dimension,
+                                relatedCharacterUrl = it.residents.firstOrNull()
+                            )
                         }
                     }
                 }
@@ -125,13 +126,16 @@ class RemoteStorageViewModel(
         if (storageUiState.isLoadingLast) return
         val current = explorerUiState as? ExplorerUiState.Success ?: return
         if (current.isRolling) return
-        val next = current.items.filter { it.id != current.selectedItem?.id }.randomOrNull() ?: return
+        val next =
+            current.items.filter { it.id != current.selectedItem?.id }.randomOrNull() ?: return
         requestJob?.cancel()
         explorerUiState = current.copy(isRolling = true)
         // This job is independent of API requests: changing category must not lose a roll.
         storageRepository?.let { repository ->
             viewModelScope.launch {
-                storageOperation(R.string.roll_sync_failed) { repository.incrementRollCount() }
+                storageOperation(R.string.roll_sync_failed) {
+                    repository.incrementRollCount()
+                }
             }
         }
         requestJob = viewModelScope.launch {
@@ -167,9 +171,13 @@ class RemoteStorageViewModel(
         if (storageUiState.isSaving || storageUiState.isLoadingLast || current.isRolling) return
         // Capture the category and displayed values now, before any suspension or navigation.
         val snapshot = SavedExplorerItem(
-            id = item.id, category = selectedCategory.name, name = item.name,
-            firstField = item.firstField, secondField = item.secondField,
-            imageUrl = item.image, relatedCharacterName = item.relatedCharacterName
+            id = item.id,
+            category = selectedCategory.name,
+            name = item.name,
+            firstField = item.firstField,
+            secondField = item.secondField,
+            imageUrl = item.image,
+            relatedCharacterName = item.relatedCharacterName
         )
         storageUiState = storageUiState.copy(isSaving = true, message = null)
         viewModelScope.launch {
@@ -196,13 +204,20 @@ class RemoteStorageViewModel(
                         storageUiState = storageUiState.copy(message = R.string.no_saved_item)
                         return@storageOperation
                     }
-                    val category = ExplorerCategory.entries.firstOrNull { it.name == saved.category }
+                    val category =
+                        ExplorerCategory.entries.firstOrNull { it.name == saved.category }
                     require(category != null && saved.id > 0 && saved.name.isNotBlank())
                     requestJob?.cancel()
                     selectedCategory = category
                     nameFilter = ""
-                    val item = ExplorerItem(saved.id, saved.name, saved.firstField, saved.secondField,
-                        image = saved.imageUrl, relatedCharacterName = saved.relatedCharacterName)
+                    val item = ExplorerItem(
+                        saved.id,
+                        saved.name,
+                        saved.firstField,
+                        saved.secondField,
+                        image = saved.imageUrl,
+                        relatedCharacterName = saved.relatedCharacterName
+                    )
                     explorerUiState = ExplorerUiState.Success(
                         1, listOf(item), item, isSavedSnapshot = true
                     )
@@ -225,7 +240,7 @@ class RemoteStorageViewModel(
     private suspend fun storageOperation(errorMessage: Int, action: suspend () -> Unit) {
         try {
             // Firebase can queue writes while offline. A timeout ends the spinner, not the write.
-            val completed = withTimeoutOrNull(15_000) { action(); true } ?: false
+            val completed = withTimeoutOrNull(15_000.milliseconds) { action(); true } ?: false
             if (!completed) storageUiState = storageUiState.copy(message = R.string.storage_timeout)
         } catch (e: CancellationException) {
             throw e

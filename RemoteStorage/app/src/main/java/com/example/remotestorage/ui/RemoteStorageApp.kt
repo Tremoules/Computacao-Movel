@@ -24,9 +24,14 @@ fun RemoteStorageApp() {
     Scaffold(topBar = { RemoteStorageTopAppBar() }) { contentPadding ->
         Surface(modifier = Modifier.fillMaxSize()) {
             val context = LocalContext.current.applicationContext
-            val remoteStorageViewModel: RemoteStorageViewModel = viewModel(factory = viewModelFactory {
-                initializer { RemoteStorageViewModel(storageRepository = RemoteStorageProvider.create(context)) }
-            })
+            val remoteStorageViewModel: RemoteStorageViewModel = viewModel(
+                factory = viewModelFactory {
+                    initializer {
+                        RemoteStorageViewModel(
+                            storageRepository = RemoteStorageProvider.create(context)
+                        )
+                    }
+                })
             HomeScreen(
                 explorerUiState = remoteStorageViewModel.explorerUiState,
                 selectedCategory = remoteStorageViewModel.selectedCategory,
@@ -51,7 +56,6 @@ fun RemoteStorageApp() {
 @Composable
 fun RemoteStorageTopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(R.string.app_name)) },
-        modifier = modifier
+        title = { Text(text = stringResource(R.string.app_name)) }, modifier = modifier
     )
 }

@@ -21,8 +21,9 @@ class FirebaseRemoteStorageRepository(
     // Keep every save in Firebase; only download the most recent 50 for the screen.
     override fun observeHistory(): Flow<List<SavedExplorerItem>> =
         root.child("history").orderByChild("savedAt").limitToLast(50).snapshots().map { snapshot ->
-            snapshot.children.mapNotNull { it.getValue(SavedExplorerItem::class.java) }
-                .reversed()
+            snapshot.children.mapNotNull {
+                it.getValue(SavedExplorerItem::class.java)
+            }.reversed()
         }
 
     override suspend fun save(item: SavedExplorerItem) {
@@ -38,7 +39,11 @@ class FirebaseRemoteStorageRepository(
             "savedAt" to ServerValue.TIMESTAMP
         )
         // One atomic write: lastItem and its history entry either both succeed or both fail.
-        root.updateChildren(mapOf("lastItem" to values, "history/$key" to values)).await()
+        root.updateChildren(
+            mapOf(
+                "lastItem" to values, "history/$key" to values
+            )
+        ).await()
     }
 
     override suspend fun loadLast(): SavedExplorerItem? =
@@ -46,7 +51,9 @@ class FirebaseRemoteStorageRepository(
 
     override suspend fun incrementRollCount() {
         // Increment on the server so two devices cannot overwrite each other's rolls.
-        root.child("rollCount").setValue(ServerValue.increment(1)).await()
+        root.child("rollCount").setValue(
+            ServerValue.increment(1)
+        ).await()
     }
 
     private fun Query.snapshots(): Flow<DataSnapshot> = callbackFlow {
@@ -61,6 +68,8 @@ class FirebaseRemoteStorageRepository(
         }
         addValueEventListener(listener)
         // Cancelling the ViewModel collection also detaches the Firebase listener.
-        awaitClose { removeEventListener(listener) }
+        awaitClose {
+            removeEventListener(listener)
+        }
     }
 }
