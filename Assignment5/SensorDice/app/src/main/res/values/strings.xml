@@ -3,4 +3,7 @@
     <string name="roll">Roll</string>
     <string name="back">Back</string>
     <string name="result_screen">Result Screen</string>
+    <string name="roll_gesture_hint">Tap Roll, shake your phone, or flick across the play area. Drag Roll to move it.</string>
+    <string name="die_face">Die showing %1$d</string>
+    <string name="current_value">Current value: %1$d</string>
 </resources>

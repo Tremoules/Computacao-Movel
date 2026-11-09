@@ -1,6 +1,6 @@
 # Assignment 5 - Drag, Shake & Camera
 
-Setup baseline for two independent Android apps, copied from the completed work.
+Two independent Android apps based on the earlier assignments.
 Open each app directory separately in Android Studio. There is no shared Gradle
 project, source directory or dependency on the earlier assignment directories.
 
@@ -34,8 +34,8 @@ and a rebuild. No local substitute for Firebase is introduced.
 
 ## Scope
 
-Only copying and identity/setup changes are included. Shake, drag, flick, camera,
-photo updates and GPS storage will be implemented in the next step.
+Sensor Dice supports shake, drag, and flick on the roll screen. Sensor Explorer
+is at the setup baseline, with camera, photo updates, and GPS storage pending.
 
 Run `./gradlew testDebugUnitTest assembleDebug lintDebug` in each app directory
 (`gradlew.bat` on Windows) with the same SDK/JDK prerequisites as the originals.
