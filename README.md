@@ -29,7 +29,7 @@ This repository will contain five course assignments and, potentially, a final c
 | [Assignment 2 — Dice Screens](./DiceScreens) | An Android application developed as the second course assignment. | Completed |
 | [Assignment 3 — Rick and Morty Explorer](./RickAndMortyExplorer) | An Android application for exploring characters, episodes, and locations from the Rick and Morty API, with name filtering and random item selection. | Completed |
 | [Assignment 4 — Remote Storage](./RemoteStorage) | Extends Assignment 3 with Firebase storage for saving and loading items, tracking rolls, and maintaining saved-item history. | In progress |
-| [Assignment 5 — Drag, Shake & Camera](./Assignment5) | Independent Sensor Dice and Sensor Explorer apps, based on Assignments 2 and 4. | Setup ready; features pending |
+| [Assignment 5 — Drag, Shake & Camera](./Assignment5) | Sensor Dice adds shake, drag, and flick. Sensor Explorer captures location photos with coordinates. | Implemented |
 | Final Course Project | To be defined. | Planned |
 
 Each project is maintained in its own directory and may include its own README with specific requirements, implementation details, and setup instructions.

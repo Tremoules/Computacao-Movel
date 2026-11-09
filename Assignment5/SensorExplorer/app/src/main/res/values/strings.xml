@@ -54,4 +54,18 @@
     <string name="saved_snapshot">Saved item</string>
     <string name="saved_snapshot_description">Showing the snapshot stored in Firebase, independently of API results.</string>
     <string name="browse_api">Browse API items</string>
+    <string name="location_add_photo">Add photo</string>
+    <string name="location_replace_photo">Replace photo</string>
+    <string name="location_photo_description">Captured photo for %1$s</string>
+    <string name="location_photo_coordinates">Latitude %1$.6f · Longitude %2$.6f</string>
+    <string name="camera_title">Photo for %1$s</string>
+    <string name="camera_permissions">Allow camera and location to save a photo with your coordinates. You can grant access in app settings if the prompt no longer appears.</string>
+    <string name="camera_allow_permissions">Allow access</string>
+    <string name="camera_back">Back</string>
+    <string name="camera_capture">Capture and save</string>
+    <string name="camera_saving">Capturing and finding your location…</string>
+    <string name="camera_no_location">Could not find your location. Turn on device location and try again.</string>
+    <string name="camera_unavailable">Could not open the camera on this device.</string>
+    <string name="camera_capture_failed">Could not capture a photo. Try again.</string>
+    <string name="camera_save_failed">Could not save the photo. Try again.</string>
 </resources>

@@ -18,19 +18,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.sensorexplorer.R
+import com.example.sensorexplorer.data.LocationPhoto
 import com.example.sensorexplorer.ui.theme.SensorExplorerTheme
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     explorerUiState: ExplorerUiState,
     selectedCategory: ExplorerCategory,
     nameFilter: String,
@@ -45,6 +49,8 @@ fun HomeScreen(
     onRetryStorageSync: () -> Unit = {},
     onDismissStorageMessage: () -> Unit = {},
     onBrowseApi: () -> Unit = {},
+    locationPhoto: LocationPhoto? = null,
+    onCaptureLocationPhoto: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
@@ -89,20 +95,24 @@ fun HomeScreen(
                 category = selectedCategory,
                 onRoll = onRoll,
                 allowRoll = !storageState.isLoadingLast,
-                onBrowseApi = onBrowseApi
+                onBrowseApi = onBrowseApi,
+                locationPhoto = locationPhoto,
+                onCaptureLocationPhoto = onCaptureLocationPhoto
             )
         }
     }
 }
 
 @Composable
-fun ResultScreen(
+internal fun ResultScreen(
     result: ExplorerUiState.Success,
     category: ExplorerCategory,
     onRoll: () -> Unit,
     modifier: Modifier = Modifier,
     allowRoll: Boolean = true,
-    onBrowseApi: () -> Unit = {}
+    onBrowseApi: () -> Unit = {},
+    locationPhoto: LocationPhoto? = null,
+    onCaptureLocationPhoto: () -> Unit = {}
 ) {
     val item = result.selectedItem
     val imageCount = (result.items.mapNotNull { it.image } + listOfNotNull(item?.image)).distinct().size
@@ -133,9 +143,20 @@ fun ResultScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     val placeholder = painterResource(R.drawable.image_placeholder)
+                    val context = LocalContext.current
+                    val photoRequest = remember(context, locationPhoto) {
+                        locationPhoto?.let { photo ->
+                            ImageRequest.Builder(context)
+                                .data(photo.file)
+                                .memoryCacheKey("${photo.file.path}:${photo.modifiedAt}")
+                                .build()
+                        }
+                    }
                     AsyncImage(
-                        model = item.image,
-                        contentDescription = item.relatedCharacterName?.let {
+                        model = photoRequest ?: item.image,
+                        contentDescription = if (locationPhoto != null) {
+                            stringResource(R.string.location_photo_description, item.name)
+                        } else item.relatedCharacterName?.let {
                             stringResource(R.string.related_character_image, it)
                         } ?: stringResource(R.string.item_image, item.name),
                         placeholder = placeholder,
@@ -144,7 +165,11 @@ fun ResultScreen(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(200.dp)
                     )
-                    if (item.image == null) {
+                    if (locationPhoto != null) {
+                        Text(stringResource(R.string.location_photo_coordinates,
+                            locationPhoto.latitude, locationPhoto.longitude),
+                            style = MaterialTheme.typography.bodySmall)
+                    } else if (item.image == null) {
                         Text(stringResource(R.string.image_unavailable))
                     } else if (item.relatedCharacterName != null) {
                         Text(stringResource(R.string.related_character_image, item.relatedCharacterName),
@@ -155,6 +180,12 @@ fun ResultScreen(
                         item.firstField.ifBlank { stringResource(R.string.unknown) }))
                     Text(stringResource(R.string.item_field, stringResource(category.secondFieldLabel),
                         item.secondField.ifBlank { stringResource(R.string.unknown) }))
+                    if (category == ExplorerCategory.Location) {
+                        Button(onClick = onCaptureLocationPhoto, enabled = allowRoll && !result.isRolling) {
+                            Text(stringResource(if (locationPhoto == null) R.string.location_add_photo
+                                else R.string.location_replace_photo))
+                        }
+                    }
                 }
             }
         }

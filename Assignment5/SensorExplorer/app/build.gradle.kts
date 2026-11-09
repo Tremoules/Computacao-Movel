@@ -44,6 +44,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.exifinterface)
     implementation(platform(libs.firebase.bom.v3510))
     implementation(libs.firebase.database)
     implementation(libs.kotlinx.coroutines.play.services)

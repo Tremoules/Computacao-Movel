@@ -34,8 +34,9 @@ and a rebuild. No local substitute for Firebase is introduced.
 
 ## Scope
 
-Sensor Dice supports shake, drag, and flick on the roll screen. Sensor Explorer
-is at the setup baseline, with camera, photo updates, and GPS storage pending.
+[Sensor Dice](./SensorDice/IMPLEMENTATION.md) supports shake, drag, and flick on
+the roll screen. [Sensor Explorer](./SensorExplorer/IMPLEMENTATION.md) adds live
+camera preview and stores a replaceable photo with coordinates for each location.
 
 Run `./gradlew testDebugUnitTest assembleDebug lintDebug` in each app directory
 (`gradlew.bat` on Windows) with the same SDK/JDK prerequisites as the originals.

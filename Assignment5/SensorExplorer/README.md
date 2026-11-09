@@ -1,10 +1,14 @@
-# Assignment 5 - Sensor Explorer (setup)
+# Assignment 5 - Sensor Explorer
 
 Independent copy of Assignment 4's explorer, using **Firebase Realtime Database**, following
 TP4's Firebase tutorial and the requirements on its final slide. This assignment
 uses the slide's no-authentication/test-mode option and stores **image URLs**.
 
-This is the setup baseline only. TP5 camera, photo and GPS features are not implemented yet.
+TP5 adds a camera preview and photo capture for the **Location** category. Add
+or replace a photo from a location card. The JPEG and its latitude and longitude
+are saved on the device and displayed when you revisit that location. See the
+[implementation and testing guide](IMPLEMENTATION.md) for usage, code changes,
+permissions, and emulator instructions.
 
 ## Inherited features
 
